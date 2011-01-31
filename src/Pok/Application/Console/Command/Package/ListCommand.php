@@ -40,7 +40,7 @@ EOT
         // Load the channel
         $channel = $loader->load($input->getArgument('channel'));
         if (!($channel instanceof \Pok\Channel\ChannelInterface)) {
-            throw new \RuntimeException('Excepted instance of `\Pok\Channel\ChannelInterface`.');
+            throw new \RuntimeException('Expected instance of `\Pok\Channel\ChannelInterface`.');
         }
 
         // Get packages
