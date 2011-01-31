@@ -1,6 +1,8 @@
 <?php
 namespace Pok\Application;
 
+use Symfony\Component\HttpFoundation\UniversalClassLoader;
+
 class Bootstrap {
     protected $di;
 
@@ -20,14 +22,11 @@ class Bootstrap {
         if (version_compare(LIBXML_DOTTED_VERSION, '2.6.20', '<')) {
             throw new \RuntimeException("The libxml extension is must be version 2.6.20 or higher.");
         }
-
-        // Modify spl autoload
-        // TODO make this plugable
-        set_include_path(realpath(__DIR__ . '/../../') . PATH_SEPARATOR . get_include_path());
-        spl_autoload_register(function($class) { return spl_autoload(str_replace(array('_', '\\'), '/', $class)); });
     }
 
     public function initialize() {
+        $this->registerAutoloader();
+
         // Setup di
         $this->di = new DependencyInjection();
 
@@ -47,5 +46,17 @@ class Bootstrap {
 
     public function run() {
         $this->di->get('console')->run();
+    }
+    
+    protected function registerAutoloader() {
+        $srcDir = realpath(__DIR__ . '/../../').'/';
+        
+        require_once $srcDir."Symfony/Component/HttpFoundation/UniversalClassLoader.php";
+        $loader = new UniversalClassLoader();
+        $loader->registerNamespaces(array(
+            'Symfony'   => $srcDir,
+            'Pok'       => $srcDir,
+        ));
+        $loader->register();
     }
 }
