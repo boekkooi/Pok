@@ -54,7 +54,7 @@ abstract class Loader implements LoaderInterface
     public function supports($resource)
     {
         // Check if this is a simple string lookup
-        if (is_string($resource) && strpos($this->schema, $resource) === 0) {
+        if (is_string($resource) && strpos($resource, $this->schema) === 0) {
             return true;
         }
 
